@@ -1,0 +1,4 @@
+package shippingTracker
+
+class Shipment {
+}
