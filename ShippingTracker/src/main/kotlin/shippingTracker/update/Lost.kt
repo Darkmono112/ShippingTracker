@@ -9,7 +9,7 @@ class Lost(shipment: Shipment, timeStamp: Long) : PackageUpdate() ,Update  {
 
 
     override fun updateShipment(shipment: Shipment){
-
+        shipment.st
     }
 
 
