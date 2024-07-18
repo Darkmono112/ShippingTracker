@@ -1,4 +1,13 @@
 package shippingTracker.update
 
-class Created {
+import shippingTracker.Shipment
+
+class Created(
+    override val shipment: Shipment,
+    override val timeStamp: Long
+):PackageUpdate() {
+    override val updateType = "Created"
+    override fun updateShipment() {
+        shipment.status = updateType
+    }
 }

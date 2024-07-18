@@ -7,6 +7,7 @@ class Shipment(val id:String):Subject {
 
     var status = "None"
     val notes = mutableListOf<String>()
+    //TODO consider private
     var updateHistory = mutableListOf<Update>()
     var expectedDeliveryTimestamp: Long = 0
     var currentLocation = "unknown"
