@@ -2,6 +2,6 @@ package shippingTracker
 
 interface Subject {
 
-    fun subscribe()
-    fun unsubscribe()
+    fun subscribe(observer: Observer)
+    fun unsubscribe(observer: Observer)
 }
