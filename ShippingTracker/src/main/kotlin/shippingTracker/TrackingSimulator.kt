@@ -1,4 +1,0 @@
-package shippingTracker
-
-class TrackingSimulator {
-}

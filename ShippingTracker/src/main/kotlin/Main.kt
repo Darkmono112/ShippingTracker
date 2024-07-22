@@ -1,3 +1,4 @@
+ import shippingTracker.TrackingServer
  import androidx.compose.desktop.ui.tooling.preview.Preview
  import androidx.compose.foundation.layout.Column
  import androidx.compose.foundation.layout.Row
@@ -14,12 +15,16 @@ import androidx.compose.runtime.setValue
  import androidx.compose.ui.Modifier
  import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+ import kotlinx.coroutines.launch
+ import kotlinx.coroutines.runBlocking
 
-@Composable
+ @Composable
 @Preview
 fun App() {
 
     //Create and us the TrackerViewHelper
+
+
 
     MaterialTheme {
         Column{
@@ -45,7 +50,16 @@ fun App() {
 }
 
 fun main() = application {
+    startServer()
+
     Window(onCloseRequest = ::exitApplication) {
         App()
     }
 }
+
+ fun startServer() = runBlocking {
+      launch{
+         val ktorStuf = TrackingServer()
+         ktorStuf.startKtor()
+     }
+ }
