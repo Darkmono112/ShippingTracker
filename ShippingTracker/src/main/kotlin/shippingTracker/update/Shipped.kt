@@ -1,6 +1,6 @@
 package shippingTracker.update
 
-import shippingTracker.Shipment
+import shippingTracker.shipment.Shipment
 
 class Shipped(
     override val shipment: Shipment,

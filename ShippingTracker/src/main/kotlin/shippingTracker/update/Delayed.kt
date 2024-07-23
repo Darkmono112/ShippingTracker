@@ -1,6 +1,6 @@
 package shippingTracker.update
 
-import shippingTracker.Shipment
+import shippingTracker.shipment.Shipment
 //TODO check for privateability
 class Delayed(
     override val shipment: Shipment,

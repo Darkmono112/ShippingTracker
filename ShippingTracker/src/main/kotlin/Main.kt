@@ -22,7 +22,8 @@ import androidx.compose.ui.window.application
 @Preview
 fun App() {
 
-    //Create and us the TrackerViewHelper
+    //Create and use the TrackerViewHelper
+    //TODO there should be multiple viewHelpers that are create able
 
 
 

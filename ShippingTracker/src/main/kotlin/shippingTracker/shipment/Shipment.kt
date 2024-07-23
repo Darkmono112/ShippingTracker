@@ -1,12 +1,16 @@
-package shippingTracker
+package shippingTracker.shipment
 
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import shippingTracker.observer.Observer
 import shippingTracker.update.Update
 
-class Shipment(val id:String):Subject {
+abstract class Shipment(val id:String): Subject {
 
 
     var status = "None"
     val notes = mutableListOf<String>()
+
     //TODO consider private
     var updateHistory = mutableListOf<Update>()
     var expectedDeliveryTimestamp: Long = 0
@@ -22,12 +26,17 @@ class Shipment(val id:String):Subject {
         if(subscribers.contains(observer)) subscribers.remove(observer)
     }
 
-    fun addUpdate(update:Update){
-        if(!updateHistory.contains(update)) updateHistory.add(update)
-        notifySubscribers()
-    }
+    //TODO error check this
+    fun addUpdate(update:Update) = runBlocking{
+        if(!updateHistory.contains(update)){
+            updateHistory.add(update)
 
-    //TODO Will probably have to make this async
+        }
+        launch{
+            notifySubscribers()
+        }
+
+    }
     private fun notifySubscribers(){
         for( sub in subscribers){
             sub.update()

@@ -1,4 +1,6 @@
-package shippingTracker
+package shippingTracker.shipment
+
+import shippingTracker.observer.Observer
 
 interface Subject {
 
