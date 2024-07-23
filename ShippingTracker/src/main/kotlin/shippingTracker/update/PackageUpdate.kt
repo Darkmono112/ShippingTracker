@@ -9,7 +9,4 @@ abstract class PackageUpdate: Update{
     init{
         this.updateShipment()
     }
-
-
-
 }

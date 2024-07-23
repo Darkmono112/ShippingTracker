@@ -7,6 +7,8 @@ import io.ktor.server.netty.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import shippingTracker.shipment.Shipment
+import shippingTracker.update.*
 import java.io.File
 
 import shippingTracker.validation.UpdateValidator
@@ -14,7 +16,7 @@ import shippingTracker.validation.UpdateValidator
 public class TrackingServer() {
 
     private val updateValidator = UpdateValidator()
-
+    private val tracker = Tracker()
     suspend fun startKtor(){
         embeddedServer(Netty,8080){
             routing {
@@ -27,7 +29,6 @@ public class TrackingServer() {
                     if(data != null){
                         createUpdate(data)
                     }
-                    println(data)
                     call.respondText { "Data sent to server" }
                 }
             }
@@ -36,9 +37,37 @@ public class TrackingServer() {
 
 
     private fun createUpdate(components : List<String>){
-        when (components[0]){
+        //components[3] is other, since we don't know if other will be used we'll depend on the validator
+        val type = components[0]
+        val id = components[1]
+        val timeArrived = components[2].toLong()
+        // get the shipment, if it doesn't exist return null
+        if("CREATED" == type.uppercase()){
+            tracker.createShipment(components)
+            return
+        }
+        //check if shipment actually exsists then add the update
+        val shipment = tracker.findShipment(id) ?: return
+        if(components.size == 4){
+            shipment.addUpdate(
+                when(type){
+                    "NOTE"-> Note(shipment,timeArrived,components[3])
+                    "DELAYED" -> Delayed(shipment,timeArrived,components[3].toLong())
+                    "SHIPPED" -> Shipped(shipment, timeArrived, components[3].toLong())
+                    else -> Location(shipment,timeArrived,components[3])
+                }
+            )
+
 
         }
+        
+        shipment.addUpdate(
+            when(type.uppercase()){
+                "CANCELLED" -> Cancelled(shipment,timeArrived)
+                "DELIVERED" -> Delivered(shipment,timeArrived)
+                else -> Lost(shipment,timeArrived)
+            }
+        )
 
     }
 
