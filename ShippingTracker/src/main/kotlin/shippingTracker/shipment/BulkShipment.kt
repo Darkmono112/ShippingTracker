@@ -14,14 +14,15 @@ class BulkShipment(
 
     override var status: String = "None"
 
-    override fun addUpdate(update:Update) = runBlocking{
+    override fun addUpdate(update:Update) {
         if(update.updateType.uppercase() == "SHIPPED") checkBulk()
         if(!updateHistory.contains(update)){
             updateHistory.add(update)
+            update.updateShipment()
         }
-        launch{
+
             notifySubscribers()
-        }
+
 
     }
     private fun checkBulk(){

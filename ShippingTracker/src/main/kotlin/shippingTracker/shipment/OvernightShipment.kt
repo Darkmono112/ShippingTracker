@@ -5,7 +5,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import shippingTracker.update.Update
 import java.time.Instant
-import java.time.temporal.ChronoUnit 
+import java.time.temporal.ChronoUnit
 
 class OvernightShipment(
     id:String,
@@ -13,14 +13,15 @@ class OvernightShipment(
 ): Shipment(id) {
     override var status: String = "none"
 
-    override fun addUpdate(update: Update)= runBlocking{
+    override fun addUpdate(update: Update){
         if(update.updateType.uppercase() == "SHIPPED") checkOvernight()
         if(!updateHistory.contains(update)){
             updateHistory.add(update)
+            update.updateShipment()
         }
-        launch{
+
             notifySubscribers()
-        }
+
 
     }
 
@@ -30,7 +31,7 @@ class OvernightShipment(
         val delivery = Instant.ofEpochMilli(expectedDeliveryTimestamp)
 
         if(delivery > target){
-            this.status = "Shipment placed to deliver later than expected days"
+            this.status = "Shipment placed to deliver later than expected"
         }
     }
 }

@@ -26,9 +26,9 @@ abstract class Shipment(val id:String): Subject {
         if(subscribers.contains(observer)) subscribers.remove(observer)
     }
 
-    abstract fun addUpdate(update:Update):Job
+    abstract fun addUpdate(update:Update)
 
-    public fun notifySubscribers(){
+    fun notifySubscribers(){
         for( sub in subscribers){
             sub.update()
         }

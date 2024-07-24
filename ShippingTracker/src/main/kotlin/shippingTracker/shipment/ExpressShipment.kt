@@ -13,14 +13,15 @@ class ExpressShipment(
 
     override var status: String = "none"
 
-    override fun addUpdate(update: Update) = runBlocking {
+    override fun addUpdate(update: Update) {
         if(update.updateType.uppercase() == "SHIPPED") checkExpress()
         if(!updateHistory.contains(update)){
             updateHistory.add(update)
+            update.updateShipment()
         }
-        launch{
-            notifySubscribers()
-        }
+
+        notifySubscribers()
+
     }
 
     fun checkExpress(){

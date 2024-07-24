@@ -4,11 +4,18 @@ import shippingTracker.factory.ShipmentFactory
 import shippingTracker.shipment.Shipment
 import shippingTracker.update.Created
 
-class Tracker() {
+class Tracker private constructor() {
 
-    val shipments:MutableList<Shipment> = mutableListOf()
+    companion object {
+        @Volatile
+        private var instance: Tracker? = null
+        fun getInstance() =
+            instance ?: synchronized(this){
+            instance ?: Tracker().also { instance = it }
+        }
+    }
+    val shipments: MutableList<Shipment> = mutableListOf()
     private val shipmentFactory = ShipmentFactory()
-
     private fun addShipment(shipment: Shipment){
         shipments.add(shipment)
     }
@@ -28,9 +35,11 @@ class Tracker() {
         input[3] = shipmentType
         input[2] = CreationTimeStamp
         */
+
         val shipment = shipmentFactory.createShipment(input)
         shipment.addUpdate(Created(shipment,input[2].toLong()))
         addShipment(shipment)
+        println(shipments)
 
     }
 

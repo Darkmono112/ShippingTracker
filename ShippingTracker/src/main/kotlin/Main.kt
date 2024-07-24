@@ -1,31 +1,25 @@
- import shippingTracker.TrackingServer
- import androidx.compose.desktop.ui.tooling.preview.Preview
- import androidx.compose.foundation.layout.Column
- import androidx.compose.foundation.layout.Row
- import androidx.compose.foundation.layout.padding
- import androidx.compose.material.Button
+import shippingTracker.TrackingServer
+import androidx.compose.desktop.ui.tooling.preview.Preview
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
- import androidx.compose.material.TextField
- import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
- import androidx.compose.ui.Modifier
- import androidx.compose.ui.window.Window
+import androidx.compose.material.TextField
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
- import kotlinx.coroutines.launch
- import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import shippingTracker.observer.TrackerViewHelper
 
- @Composable
+@Composable
 @Preview
 fun App() {
 
-    //Create and use the TrackerViewHelper
-    //TODO there should be multiple viewHelpers that are create able
-
-
+    var viewHelperList = remember { mutableListOf<TrackerViewHelper>()}
 
     MaterialTheme {
         Column{
@@ -40,9 +34,36 @@ fun App() {
                 )
                 Button(onClick = {
                     //Reset tracking box
+                    viewHelperList.add(TrackerViewHelper(text))
                     text = ""
                 }) {
                     Text("Track")
+                }
+            }
+            for(helper in viewHelperList){
+                Row{
+                    Column {
+                        Text("Shipment ID: ${helper.shipmentId}")
+                        Text("Status: ${helper.shipmentStatus}")
+                        Text("Location:${helper.shipmentLocation}")
+                        Text("Est delivery date${helper.convertLongToDateTime(helper.expectedShipmentDeliveryDate)}" )
+                        Text("Status Updates:")
+                        for(status in helper.shipmentUpdateHistory)
+                        {
+                            Text(status.updateType)
+                        }
+                        Text("Notes:")
+                        for(note in helper.shipmentNotes){
+                            Text(note)
+                        }
+                    }
+                    Button(
+                        onClick = {
+
+                        }
+                    ){
+                        Text("StopTracking")
+                    }
                 }
             }
         }
@@ -50,9 +71,10 @@ fun App() {
     }
 }
 
+
+
 fun main() = application {
     startServer()
-
     Window(onCloseRequest = ::exitApplication) {
         App()
     }

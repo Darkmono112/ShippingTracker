@@ -7,6 +7,8 @@ import io.ktor.server.netty.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import kotlinx.coroutines.runBlocking
+import shippingTracker.observer.TrackerViewHelper
 import shippingTracker.update.*
 import java.io.File
 
@@ -15,7 +17,7 @@ import shippingTracker.validation.UpdateValidator
 class TrackingServer {
 
     private val updateValidator = UpdateValidator()
-    private val tracker = Tracker()
+    val tracker = Tracker.getInstance()
     suspend fun startKtor(){
         embeddedServer(Netty,8080){
             routing {
@@ -26,6 +28,7 @@ class TrackingServer {
                     //TODO send data updates this way
                     val data: List<String>? = updateValidator.validateInput(call.receiveText())
                     if(data != null){
+
                         createUpdate(data)
                         call.respondText { "Data sent to server" }
                     }
@@ -51,23 +54,16 @@ class TrackingServer {
         }
         //check if shipment actually exists then add the update
         val shipment = tracker.findShipment(id) ?: return
-        if(components.size == 4){
-            shipment.addUpdate(
-                when(type){
-                    "NOTE"-> Note(shipment,timeArrived,components[3])
-                    "DELAYED" -> Delayed(shipment,timeArrived,components[3].toLong())
-                    "SHIPPED" -> Shipped(shipment, timeArrived, components[3].toLong())
-                    else -> Location(shipment,timeArrived,components[3])
-                }
-            )
 
-
-        }
         
         shipment.addUpdate(
             when(type.uppercase()){
+                "NOTE"-> Note(shipment,timeArrived,components[3])
+                "DELAYED" -> Delayed(shipment,timeArrived,components[3].toLong())
+                "SHIPPED" -> Shipped(shipment, timeArrived, components[3].toLong())
                 "CANCELLED" -> Cancelled(shipment,timeArrived)
                 "DELIVERED" -> Delivered(shipment,timeArrived)
+                "LOCATION" -> Location(shipment,timeArrived,components[3])
                 else -> Lost(shipment,timeArrived)
             }
         )

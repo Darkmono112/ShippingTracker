@@ -4,7 +4,7 @@ package shippingTracker.validation
 class UpdateValidator(): Validator {
 
     private enum class PossibleUpdates(val paramNumber:Int){
-        CREATED(3),
+        CREATED(4),
         LOCATION(4),
         SHIPPED(4),
         LOST(3),
@@ -19,10 +19,11 @@ class UpdateValidator(): Validator {
 
         val possibleUpdates = PossibleUpdates.entries.map {  it.name }
         val updateList = input.split(",")
-
         //Check the list for possible types of updates and correct number of params
         if(!possibleUpdates.contains(updateList[0].uppercase())) return null
-        if(updateList.size != PossibleUpdates.valueOf(updateList[0].uppercase()).paramNumber)return null
+
+        if(updateList.size != PossibleUpdates.valueOf(updateList[0].uppercase()).paramNumber) return null
+
 
         //Check that numericals are entered in the 2nd and 3rd positon, include 4th for certain updates
         if(updateList[0].uppercase() in listOf("SHIPPED","DELAYED")){
@@ -31,7 +32,12 @@ class UpdateValidator(): Validator {
         else{
             if(!checkNumberInput(updateList,2)) return null
         }
-        if(updateList[0].uppercase() == "CREATED") return creationValidator.validateInput(input)
+
+        if(updateList[0].uppercase() == "CREATED"){
+
+            val creation = creationValidator.validateInput(input)
+            return creation
+        }
 
         return updateList
     }

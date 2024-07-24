@@ -9,5 +9,6 @@ class Created(
     override val updateType = "Created"
     override fun updateShipment() {
         shipment.status = updateType
+        println(shipment.status)
     }
 }
