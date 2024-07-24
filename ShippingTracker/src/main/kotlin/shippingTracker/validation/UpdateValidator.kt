@@ -27,13 +27,11 @@ class UpdateValidator(): Validator {
         //Check that numericals are entered in the 2nd and 3rd positon, include 4th for certain updates
         if(updateList[0].uppercase() in listOf("SHIPPED","DELAYED")){
             if(!checkNumberInput(updateList, 3)) return null
-
         }
         else{
             if(!checkNumberInput(updateList,2)) return null
         }
         if(updateList[0].uppercase() == "CREATED") return creationValidator.validateInput(input)
-
 
         return updateList
     }

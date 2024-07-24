@@ -1,7 +1,6 @@
 package shippingTracker
 
 import shippingTracker.factory.ShipmentFactory
-import shippingTracker.shipment.BulkShipment
 import shippingTracker.shipment.Shipment
 import shippingTracker.update.Created
 
@@ -10,7 +9,7 @@ class Tracker() {
     val shipments:MutableList<Shipment> = mutableListOf()
     private val shipmentFactory = ShipmentFactory()
 
-    fun addShipment(shipment: Shipment){
+    private fun addShipment(shipment: Shipment){
         shipments.add(shipment)
     }
 
@@ -29,7 +28,7 @@ class Tracker() {
         input[3] = shipmentType
         input[2] = CreationTimeStamp
         */
-        val shipment = shipmentFactory.createShipment(input[1],input[3])
+        val shipment = shipmentFactory.createShipment(input)
         shipment.addUpdate(Created(shipment,input[2].toLong()))
         addShipment(shipment)
 

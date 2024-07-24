@@ -7,13 +7,12 @@ import io.ktor.server.netty.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import shippingTracker.shipment.Shipment
 import shippingTracker.update.*
 import java.io.File
 
 import shippingTracker.validation.UpdateValidator
 
-public class TrackingServer() {
+class TrackingServer {
 
     private val updateValidator = UpdateValidator()
     private val tracker = Tracker()
@@ -28,8 +27,12 @@ public class TrackingServer() {
                     val data: List<String>? = updateValidator.validateInput(call.receiveText())
                     if(data != null){
                         createUpdate(data)
+                        call.respondText { "Data sent to server" }
                     }
-                    call.respondText { "Data sent to server" }
+                    else{
+                        call.respondText { "Invalid  Data Input" }
+                    }
+
                 }
             }
         }.start(wait = false )
@@ -46,7 +49,7 @@ public class TrackingServer() {
             tracker.createShipment(components)
             return
         }
-        //check if shipment actually exsists then add the update
+        //check if shipment actually exists then add the update
         val shipment = tracker.findShipment(id) ?: return
         if(components.size == 4){
             shipment.addUpdate(

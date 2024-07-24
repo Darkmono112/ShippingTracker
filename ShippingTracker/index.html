@@ -10,12 +10,13 @@
             method: "post",
             body: document.getElementById("input").value
         })
+        document.getElementById("input").value = ""
     }
 </script>
 <body>
 <h1> Shipment Updater </h1>
 <div>
-    <input text = "Tracking information" id = "input">
+    <input id = "input">
     <button onclick="sendData()">
         update shipment
     </button>

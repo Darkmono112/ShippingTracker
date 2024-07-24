@@ -7,5 +7,6 @@ class Delivered(override val shipment: Shipment, override val timeStamp: Long) :
 
     override fun updateShipment() {
         shipment.status = updateType
+        shipment.expectedDeliveryTimestamp = timeStamp
     }
 }
